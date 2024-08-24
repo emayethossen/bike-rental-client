@@ -1,20 +1,27 @@
-import { Layout, Menu } from "antd";
-import { UploadOutlined, UserOutlined, VideoCameraOutlined } from '@ant-design/icons';
-import { createElement } from "react";
+import { Layout, Menu, MenuProps } from "antd";
+import { Outlet } from "react-router-dom";
 
 const { Header, Content, Sider, Footer } = Layout
 
-const items = [UserOutlined, VideoCameraOutlined, UploadOutlined, UserOutlined].map(
-    (icon, index) => ({
-        key: String(index + 1),
-        icon: createElement(icon),
-        label: `nav ${index + 1}`,
-    }),
-);
+const items: MenuProps['items'] = [
+    {
+        key: '1',
+        label: 'Dashboard',
+    },
+    {
+        key: '2',
+        label: 'Profile',
+    },
+    {
+        key: '3',
+        label: 'User Management',
+    }
+]
+
 
 const MainLayout = () => {
     return (
-        <Layout style={{height:'100vh'}}>
+        <Layout style={{ height: '100vh' }}>
             <Sider
                 breakpoint="lg"
                 collapsedWidth="0"
@@ -25,7 +32,9 @@ const MainLayout = () => {
                     console.log(collapsed, type);
                 }}
             >
-                <div className="demo-logo-vertical" />
+                <div className="demo-logo-vertical text-white">
+                    <h1>Bike Rental System</h1>
+                    </div> 
                 <Menu theme="dark" mode="inline" defaultSelectedKeys={['4']} items={items} />
             </Sider>
             <Layout>
@@ -37,7 +46,7 @@ const MainLayout = () => {
                             minHeight: 360,
                         }}
                     >
-                        MAin Content Show Here
+                       <Outlet />
                     </div>
                 </Content>
                 <Footer style={{ textAlign: 'center' }}>
