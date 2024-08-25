@@ -1,12 +1,48 @@
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useRegisterMutation } from '../redux/api/authApi';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGoogle, faFacebookF, faTwitter, faLinkedinIn } from '@fortawesome/free-brands-svg-icons';
 import backgroundImage from '../assets/images/bike.png';
 
 const Register = () => {
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [phone, setPhone] = useState('');
+  const [address, setAddress] = useState('');
+  const [role] = useState('user');
+  const [register, { isLoading }] = useRegisterMutation();
+  const navigate = useNavigate();
+
+  const handleRegister = async (e: { preventDefault: () => void; }) => {
+    e.preventDefault();
+
+    // Validate input
+    if (!name || !email || !password || !phone || !address) {
+      alert('Please fill in all fields');
+      return;
+    }
+
+    try {
+      const data = await register({ name, email, password, phone, address, role }).unwrap();
+
+      if (data.success) {
+        navigate('/login');
+        alert('Registration successful! Please login.');
+      } else {
+        alert(data.message || 'Registration failed');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      alert(error.data.errorMessages[0]?.message || 'Registration failed');
+    }
+  };
+
   return (
     <div className="grid lg:grid-cols-2 shadow-2xl lg:px-36 lg:py-16 p-6 bg-[#ffe5ea]">
-      <div 
-        className="md:flex hidden flex-col justify-between bg-cover bg-center lg:p-10 relative rounded-lg overflow-hidden" 
+      <div
+        className="md:flex hidden flex-col justify-between bg-cover bg-center lg:p-10 relative rounded-lg overflow-hidden"
         style={{ backgroundImage: `url(${backgroundImage})` }}
       >
         {/* Black overlay with opacity */}
@@ -25,9 +61,9 @@ const Register = () => {
         </div>
       </div>
 
-      <div className="lg:border w-full lg:p-14 p-6 rounded bg-white">
-        <h2 className="md:text-3xl text-xl font-bold text-center uppercase">Register</h2>
-        <p className="md:text-xl text-lg mb-6 font-bold text-center">Create Your Account</p>
+      <div className="lg:border w-full lg:p-14 p-6 bg-white">
+        <h2 className="md:text-3xl text-xl font-bold text-center uppercase">BikeRent</h2>
+        <p className="md:text-xl text-lg mb-6 font-bold text-center">Create An Account</p>
         <div className="grid grid-cols-4 md:w-1/2 w-3/4 mx-auto justify-center items-center gap-2">
           <button className="btn btn-outline w-[32px] md:w-[48px] rounded flex justify-center items-center h-[32px] md:h-[48px] bg-red-500">
             <FontAwesomeIcon icon={faGoogle} className="text-white p-4 rounded bg-red-500" />
@@ -50,12 +86,14 @@ const Register = () => {
           <span className="px-4 text-gray-500">OR</span>
           <hr className="w-full border-gray-300" />
         </div>
-        <form className="form-control space-y-4">
+        <form className="form-control space-y-4" onSubmit={handleRegister}>
           <input
             type="text"
             name="name"
-            placeholder="Enter your name"
+            placeholder="Full Name"
             className="input py-2 px-4 rounded bg-gray-100 w-full"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
             required
           />
           <input
@@ -63,6 +101,8 @@ const Register = () => {
             name="email"
             placeholder="Enter your email"
             className="input py-2 px-4 rounded bg-gray-100 w-full"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             required
           />
           <input
@@ -70,20 +110,33 @@ const Register = () => {
             name="password"
             placeholder="Enter your password"
             className="input py-2 px-4 rounded bg-gray-100 w-full"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
             required
           />
           <input
-            type="url"
-            name="picture"
-            placeholder="Enter picture URL"
+            type="tel"
+            name="phone"
+            placeholder="Phone Number"
             className="input py-2 px-4 rounded bg-gray-100 w-full"
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
+            required
+          />
+          <textarea
+            name="address"
+            placeholder="Address"
+            className="input py-2 px-4 rounded bg-gray-100 w-full"
+            value={address}
+            onChange={(e) => setAddress(e.target.value)}
+            required
           />
           <input
             type="submit"
             value="Register"
             className="p-2 rounded text-white bg-green-500 font-semibold w-full"
           />
-          <p className="mt-2 text-center">Already have an account? <span className="text-blue-500 cursor-pointer">Login here</span></p>
+          <p className="mt-2 text-center">Already have an account? <span className="text-blue-500 cursor-pointer" onClick={() => navigate('/login')}>Login here</span></p>
         </form>
       </div>
     </div>

@@ -1,19 +1,13 @@
-import MainLayout from "./components/layout/MainLayout"
-import Slider from "./components/ui/Carousel"
-import FeatureSection from "./components/ui/FeatureSection"
+import { Outlet } from "react-router-dom"
 import Footer from "./components/ui/Footer"
-import Login from "./pages/Login"
-import Register from "./pages/Register"
+import Navbar from "./components/ui/Navbar"
 
 function App() {
 
   return (
     <>
-    {/* <MainLayout /> */}
-    <Slider />
-    <Login />
-    <Register />
-    <FeatureSection />.
+    <Navbar />
+    <Outlet />
     <Footer />
     </>
   )

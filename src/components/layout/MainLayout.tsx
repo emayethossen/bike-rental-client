@@ -5,7 +5,7 @@ const { Header, Content, Sider, Footer } = Layout
 
 const items: MenuProps['items'] = [
     {
-        key: '1',
+        key: 'Dashboard',
         label: 'Dashboard',
     },
     {
