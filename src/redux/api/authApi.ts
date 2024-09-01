@@ -1,8 +1,6 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { baseApi } from './baseApi';
 
-export const authApi = createApi({
-  reducerPath: 'authApi',
-  baseQuery: fetchBaseQuery({ baseUrl: 'https://bike-rental-project.vercel.app/api' }),
+export const authApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     register: builder.mutation({
       query: (user) => ({
@@ -18,7 +16,26 @@ export const authApi = createApi({
         body: credentials,
       }),
     }),
+
+    getUser: builder.query({
+      query: () => ({
+        url: '/users/me',
+        method: 'GET',
+      }),
+    }),
+    updateUser: builder.mutation({
+      query: (profile) => ({
+        url: '/users/me',
+        method: 'PUT',
+        body: profile,
+      }),
+    }),
   }),
 });
 
-export const { useRegisterMutation, useLoginMutation } = authApi;
+export const {
+  useRegisterMutation,
+  useLoginMutation,
+  useGetUserQuery,
+  useUpdateUserMutation
+} = authApi;

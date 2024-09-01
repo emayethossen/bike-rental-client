@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { setUser } from '../redux/features/authSlice';
 import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGoogle, faFacebookF, faTwitter, faLinkedinIn } from '@fortawesome/free-brands-svg-icons';
@@ -8,27 +10,53 @@ import { useLoginMutation } from '../redux/api/authApi';
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const navigate = useNavigate();
+  const [errorMessage, setErrorMessage] = useState(''); // State for handling error messages
   const [login, { isLoading }] = useLoginMutation();
+  // Initialize dispatch and navigate
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+
 
   const handleLogin = async (e: { preventDefault: () => void; }) => {
     e.preventDefault();
 
     // Validate input
     if (!email || !password) {
-      alert('Please fill in all fields');
+      setErrorMessage('Please fill in all fields');
       return;
     }
 
     try {
-      const data = await login({ email, password }).unwrap();
-      localStorage.setItem('token', data.token);
-      navigate('/dashboard');
+      const response = await login({ email, password }).unwrap();
+      console.log('Full login response:', response);
+
+      // Check if the response contains the required data
+      if (!response.data) {
+        throw new Error('User data is missing');
+      }
+
+      // Destructure the required user data and token from the response
+      const { data: user, token } = response;
+
+      // Set user and token in the state and localStorage
+      dispatch(setUser({ user, token }));
+      localStorage.setItem('token', token);
+
+      // Navigate based on the user's role
+      if (user.role === 'admin') {
+        navigate('/admin/dashboard');
+      } else if (user.role === 'user') {
+        navigate('/user/dashboard');
+      } else {
+        setErrorMessage('Unknown user role');
+      }
     } catch (error) {
       console.error('Login failed:', error);
-      alert('Login failed');
+      setErrorMessage('Login failed. Please check your credentials and try again.');
     }
   };
+
 
   return (
     <div className="grid lg:grid-cols-2 shadow-2xl rounded lg:px-36 lg:py-16 p-6 bg-[#ffe5ea]">
@@ -36,14 +64,11 @@ const Login = () => {
         className="md:flex hidden flex-col justify-between bg-cover bg-center lg:p-10 relative rounded overflow-hidden"
         style={{ backgroundImage: `url(${backgroundImage})` }}
       >
-        {/* Black overlay with opacity */}
         <div className="absolute inset-0 bg-black opacity-50"></div>
-
         <div className="relative z-10 flex items-center gap-2">
           <button className="p-2 rounded text-white bg-green-500 font-semibold">Login</button>
           <button className="p-2 rounded text-white bg-green-500 font-semibold">Register</button>
         </div>
-
         <div className="relative z-10 text-white mb-6">
           <h2 className="text-2xl font-semibold">BikeRent</h2>
           <p className="mt-2">
@@ -59,15 +84,12 @@ const Login = () => {
           <button className="btn btn-outline w-[32px] md:w-[48px] rounded flex justify-center items-center h-[32px] md:h-[48px] bg-red-500">
             <FontAwesomeIcon icon={faGoogle} className="text-white p-4 rounded bg-red-500" />
           </button>
-
           <button className="btn btn-outline w-[32px] md:w-[48px] rounded flex justify-center items-center h-[32px] md:h-[48px] bg-blue-600">
             <FontAwesomeIcon icon={faFacebookF} className="text-white p-4 rounded bg-blue-600" />
           </button>
-
           <button className="btn btn-outline w-[32px] md:w-[48px] rounded flex justify-center items-center h-[32px] md:h-[48px] bg-blue-400">
             <FontAwesomeIcon icon={faTwitter} className="text-white p-4 rounded bg-blue-400" />
           </button>
-
           <button className="btn btn-outline w-[32px] md:w-[48px] rounded flex justify-center items-center h-[32px] md:h-[48px] bg-blue-700">
             <FontAwesomeIcon icon={faLinkedinIn} className="text-white p-4 rounded bg-blue-700" />
           </button>
@@ -105,6 +127,7 @@ const Login = () => {
               Forget Password?
             </p>
           </div>
+          {errorMessage && <p className="text-red-500">{errorMessage}</p>} {/* Display error message */}
           <input
             type="submit"
             value="Login"
