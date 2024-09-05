@@ -9,13 +9,16 @@ const BikeListing: React.FC = () => {
 
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error loading bikes</div>;
-  const bikes = data?.data
-  console.log(bikes)
+
+  const bikes = data?.data;
+  console.log(bikes.model);
+
+  // Filter bikes based on the filters applied
   const filteredBikes = bikes?.filter((bike) => {
     return (
-      (brandFilter ? bike.brand.includes(brandFilter) : true) &&
-      (modelFilter ? bike.model.includes(modelFilter) : true) &&
-      (availabilityFilter !== null ? bike.availability === availabilityFilter : true)
+      (brandFilter ? bike.brand.toLowerCase().includes(brandFilter.toLowerCase()) : true) &&
+      (modelFilter ? bike.model.toLowerCase().includes(modelFilter.toLowerCase()) : true) &&
+      (availabilityFilter !== null ? bike.isAvailable === availabilityFilter : true)
     );
   });
 
@@ -54,14 +57,21 @@ const BikeListing: React.FC = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {filteredBikes?.map((bike) => (
           <div key={bike._id} className="p-4 border rounded">
-            <img src={bike.imageUrl} alt={bike.model} className="w-full h-48 object-cover mb-4" />
+            {/* Displaying bike image */}
+            {bike.bikeImage ? (
+              <img src={bike.bikeImage} alt={bike.model} className="w-full h-48 object-cover mb-4" />
+            ) : (
+              <div className="w-full h-48 bg-gray-300 mb-4 flex items-center justify-center text-gray-600">
+                No Image Available
+              </div>
+            )}
             <h2 className="text-lg font-bold">{bike.brand} - {bike.model}</h2>
             <p>Price: ${bike.pricePerHour}</p>
             <p>CC: {bike.cc}</p>
             <p>Year: {bike.year}</p>
-            <p>Availability: {bike.availability ? 'Available' : 'Unavailable'}</p>
+            <p>Availability: {bike.isAvailable ? 'Available' : 'Unavailable'}</p>
             <button
-              onClick={() => window.location.href = `bikes/${bike._id}`}
+              onClick={() => window.location.href = `/user/bikes/${bike._id}`}
               className="mt-2 p-2 bg-blue-500 text-white rounded"
             >
               View Details

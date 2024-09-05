@@ -1,21 +1,28 @@
 import { useState } from 'react';
 import { useGetRentalsQuery, useUpdatePaymentStatusMutation } from '../../../redux/api/rentalApi';
+import Loader from '../../../components/ui/Loader';
 
 const MyRentals = () => {
-  const { data, isLoading } = useGetRentalsQuery();
-  const [updatePaymentStatus] = useUpdatePaymentStatusMutation();
+  const { data, isLoading, error } = useGetRentalsQuery();
+  const [updatePaymentStatus, { isLoading: isUpdating }] = useUpdatePaymentStatusMutation();
   const [activeTab, setActiveTab] = useState('Unpaid');
 
   const handlePayment = async (rentalId) => {
+    if (!window.confirm('Are you sure you want to pay for this rental?')) return;
+
     try {
       await updatePaymentStatus({ rentalId, paymentStatus: 'Paid' }).unwrap();
+      alert('Payment successful!');
     } catch (error) {
       console.error('Payment failed:', error);
+      alert('Payment failed. Please try again.');
     }
   };
 
-  if (isLoading) return <p>Loading...</p>;
-  const rentals = data?.data
+  if (isLoading) return <Loader />;
+  if (error) return <p>Error loading rentals.</p>;
+
+  const rentals = data?.data;
   const filteredRentals = rentals?.filter((rental) => rental.paymentStatus === activeTab);
 
   return (
@@ -45,8 +52,9 @@ const MyRentals = () => {
               <button
                 onClick={() => handlePayment(rental.id)}
                 className="bg-blue-500 text-white px-4 py-2 rounded"
+                disabled={isUpdating}
               >
-                Pay
+                {isUpdating ? 'Processing...' : 'Pay'}
               </button>
             )}
           </div>

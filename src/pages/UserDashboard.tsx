@@ -1,26 +1,8 @@
-// UserDashboard.tsx (or another component)
-import React, { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
-import { RootState } from '../redux/store';
-
-const UserDashboard: React.FC = () => {
-    const navigate = useNavigate();
-    const user = useSelector((state: RootState) => state.auth.user);
-
-    useEffect(() => {
-        if (!user) {
-            navigate('/login');
-        } else if (user.role === 'admin') {
-            navigate('/admin/dashboard');
-        } else if (user.role === 'user') {
-            navigate('/user/dashboard');
-        }
-    }, [user, navigate]);
+const UserDashboard = () => {
 
     return (
         <div>
-            {/* Dashboard content */}
+            <h1 className='text-3xl font-bold text-purple-500'>Emayet Hossen Riad</h1>
         </div>
     );
 };

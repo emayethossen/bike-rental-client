@@ -29,6 +29,13 @@ export const bikeApi = baseApi.injectEndpoints({
         method: 'DELETE',
       }),
     }),
+    updateBikeAvailability: builder.mutation({
+      query: ({ id, availability }) => ({
+        url: `/bikes/${id}/availability`,
+        method: 'PATCH',
+        body: { availability },
+      }),
+    }),
   }),
 });
 
@@ -38,5 +45,6 @@ export const {
   useCreateBikeMutation,
   useUpdateBikeMutation,
   useDeleteBikeMutation,
+  useUpdateBikeAvailabilityMutation,
 } = bikeApi;
 

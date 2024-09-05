@@ -4,17 +4,22 @@ import { useNavigate } from 'react-router-dom';
 
 const RentalBookingModal = ({ bike, isOpen, onClose }) => {
   const [startTime, setStartTime] = useState('');
-  const [createBooking] = useCreateBookingMutation();
+  const [createBooking, { isLoading }] = useCreateBookingMutation();
   const navigate = useNavigate();
 
   const handleBooking = async () => {
+    if (new Date(startTime) <= new Date()) {
+      alert('Start time must be in the future');
+      return;
+    }
+
     try {
       await createBooking({ bikeId: bike.id, startTime }).unwrap();
-      // Assuming payment page is /payment
       navigate('/payment', { state: { amount: 100 } });
       onClose();
     } catch (error) {
       console.error('Failed to create booking:', error);
+      alert('Booking failed. Please try again.');
     }
   };
 
@@ -29,12 +34,14 @@ const RentalBookingModal = ({ bike, isOpen, onClose }) => {
           value={startTime}
           onChange={(e) => setStartTime(e.target.value)}
           className="mb-4 p-2 border border-gray-300 rounded"
+          required
         />
         <button
           onClick={handleBooking}
           className="bg-blue-500 text-white px-4 py-2 rounded"
+          disabled={isLoading}
         >
-          Pay Tk 100 and Book Now
+          {isLoading ? 'Booking...' : 'Pay Tk 100 and Book Now'}
         </button>
         <button onClick={onClose} className="ml-4 text-gray-600">
           Cancel

@@ -1,5 +1,5 @@
 import { faEnvelope, faMapMarkerAlt, faPhoneAlt } from '@fortawesome/free-solid-svg-icons';
-import image from '../../assets/images/bike.png'
+import image from '../../assets/images/bike-logo.png'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 const Footer = () => {
@@ -10,7 +10,7 @@ const Footer = () => {
                     <div className='flex justify-center md:justify-start'>
                         <img src={image} alt="" className='w-[120px]' />
                     </div>
-                    <p className='md:w-3/4'>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut elit tellus, luctus nec ullamcorper mattis.</p>
+                    <p className='md:w-3/4'>Experience freedom on the road with our convenient, affordable bike rentals, suited for every rider.</p>
                 </div>
                 <div>
                     <h2 className="font-semibold text-lg mb-2">Service</h2>
@@ -38,7 +38,7 @@ const Footer = () => {
                 </div>
             </div>
             <div className="text-center mt-6">
-                <p>Copyright © 2024 gowes | Powered by gowes</p>
+                <p>Copyright © 2024 AutoBike | Powered by AutoBike</p>
             </div>
         </footer>
     );

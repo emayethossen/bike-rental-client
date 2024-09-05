@@ -7,13 +7,13 @@ export interface User {
 }
 
 type TAuthState = {
-    user: null | object;
+    user: User | null;
     token: string | null;
 }
 
 const initialState: TAuthState = {
-    user: null,
-    token: null,
+    user: JSON.parse(localStorage.getItem('user') || 'null'),
+    token: localStorage.getItem('token'),
 };
 
 const authSlice = createSlice({
@@ -21,13 +21,21 @@ const authSlice = createSlice({
     initialState,
     reducers: {
         setUser: (state, action) => {
-            const { user, token } = action.payload
+            const { user, token } = action.payload;
             state.user = user;
-            state.token = token
+            state.token = token;
+
+            // Save user and token to localStorage
+            localStorage.setItem('user', JSON.stringify(user));
+            localStorage.setItem('token', token);
         },
         logout(state) {
             state.user = null;
             state.token = null;
+
+            // Remove user and token from localStorage
+            localStorage.removeItem('user');
+            localStorage.removeItem('token');
         },
     },
 });

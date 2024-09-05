@@ -1,5 +1,5 @@
 import { Carousel } from 'antd';
-import img from '../../assets/images/bike.png';
+import img from '../../assets/images/hello.png';
 
 const testimonials = [
     {
@@ -20,7 +20,7 @@ const testimonials = [
 ];
 
 const Testimonials = () => (
-    <div className="py-8 px-4 md:px-8 md:my-8 bg-[#364d79]">
+    <div className="py-8 px-4 md:px-8 bg-[#364d79]">
         <h1 className='md:text-4xl text-2xl text-center font-bold text-white md:mb-8 mb-4 w-3/4 mx-auto'>What Our Customers Have to Say</h1>
         <Carousel arrows infinite={false} autoplay className="text-white">
             {testimonials.map((testimonial, index) => (

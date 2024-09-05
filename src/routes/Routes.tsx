@@ -16,7 +16,10 @@ import PrivateRoute from './PrivateRoutes';
 import BikeList from '../components/ui/admin/BikeList';
 import UserDashboard from '../pages/UserDashboard';
 import UserLayout from '../components/layout/UserLayout';
-import AdminLayout from '../components/layout/AminLayout';
+import AdminLayout from '../components/layout/AdminLayout';
+import PaymentSuccess from '../components/ui/payment/PaymentSuccess';
+import PaymentFailure from '../components/ui/payment/PaymentFailure';
+import PaymentCancelled from '../components/ui/payment/PaymentCancelled';
 
 const router = createBrowserRouter([
     {
@@ -35,11 +38,15 @@ const router = createBrowserRouter([
                 path: '/contact',
                 element: <Contact />,
             },
+            {
+                path: '/bikes',
+                element: <BikeListing />,
+            },
         ],
     },
     {
         path: '/admin',
-        element: <PrivateRoute><AdminLayout /></PrivateRoute> ,
+        element: <PrivateRoute role="admin"><AdminLayout /></PrivateRoute>,
         children: [
             {
                 path: 'dashboard',
@@ -55,13 +62,13 @@ const router = createBrowserRouter([
             },
             {
                 path: 'bike-list',
-                element: < BikeList />,
+                element: <PrivateRoute role='admin'>< BikeList /></PrivateRoute>,
             },
         ]
     },
     {
         path: '/user',
-        element: <PrivateRoute><UserLayout /></PrivateRoute> ,
+        element: <PrivateRoute><UserLayout /></PrivateRoute>,
         children: [
             {
                 path: 'dashboard',
@@ -77,11 +84,23 @@ const router = createBrowserRouter([
             },
             {
                 path: 'bikes/:id',
-                element: <BikeDetail />,
+                element: <PrivateRoute><BikeDetail /></PrivateRoute>,
             },
             {
                 path: 'my-rentals',
                 element: <MyRentals />,
+            },
+            {
+                path: 'payment-success',
+                element: <PaymentSuccess />,
+            },
+            {
+                path: 'payment-failure',
+                element: <PaymentFailure />,
+            },
+            {
+                path: 'payment-cancelled',
+                element: <PaymentCancelled />,
             },
         ]
     },

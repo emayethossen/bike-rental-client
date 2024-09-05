@@ -2,7 +2,6 @@ import React from 'react';
 import { useGetAllUsersQuery, usePromoteUserToAdminMutation, useDeleteUserMutation } from '../../../redux/api/userApi';
 
 const AdminUserList: React.FC = () => {
-    // Fetch users from the API
     const { data, error, isLoading } = useGetAllUsersQuery();
     const [promoteUserToAdmin, { isLoading: isPromoting }] = usePromoteUserToAdminMutation();
     const [deleteUser, { isLoading: isDeleting }] = useDeleteUserMutation();
@@ -49,27 +48,27 @@ const AdminUserList: React.FC = () => {
 
     return (
         <div className="p-4 md:p-8">
-            <h2 className="text-2xl md:text-3xl font-bold mb-6 text-center">User Management</h2>
+            <h2 className="md:text-2xl text-xl font-semibold mb-4">User Management</h2>
             {user && user.length > 0 ? (
                 <div className="overflow-x-auto">
                     <table className="min-w-full bg-white border border-gray-200">
                         <thead>
-                            <tr className="bg-gray-100 border-b">
-                                <th className="p-3 text-left text-sm font-semibold text-gray-700">ID</th>
-                                <th className="p-3 text-left text-sm font-semibold text-gray-700">Name</th>
-                                <th className="p-3 text-left text-sm font-semibold text-gray-700">Email</th>
-                                <th className="p-3 text-left text-sm font-semibold text-gray-700">Role</th>
-                                <th className="p-3 text-left text-sm font-semibold text-gray-700">Actions</th>
+                            <tr className="bg-gray-100 border-b md:grid grid-cols-5">
+                                <th className="p-3 hidden md:flex justify-center items-center text-center text-sm font-semibold text-gray-700">ID</th>
+                                <th className="p-3 text-center text-sm font-semibold text-gray-700">Name</th>
+                                <th className="p-3 hidden md:flex justify-center items-center text-center text-sm font-semibold text-gray-700">Email</th>
+                                <th className="p-3 hidden md:flex justify-center items-center text-center text-sm font-semibold text-gray-700">Role</th>
+                                <th className="p-3 text-center text-sm font-semibold text-gray-700">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {user.map((user: any, index: number) => (
-                                <tr key={user._id} className={`border-b ${index % 2 === 0 ? 'bg-gray-50' : 'bg-white'}`}>
-                                    <td className="p-3 text-sm text-gray-700">{user._id}</td>
-                                    <td className="p-3 text-sm text-gray-700">{user.name}</td>
-                                    <td className="p-3 text-sm text-gray-700">{user.email}</td>
-                                    <td className="p-3 text-sm text-gray-700">{user.role}</td>
-                                    <td className="p-3 text-sm text-gray-700 space-x-2">
+                            {user.map((user: any) => (
+                                <tr key={user._id} className="md:grid grid-cols-5">
+                                    <td className="p-3 hidden md:block text-center text-sm text-gray-700">{user._id}</td>
+                                    <td className="p-3 text-center text-sm text-gray-700">{user.name}</td>
+                                    <td className="p-3 hidden md:block text-center text-sm text-gray-700">{user.email}</td>
+                                    <td className="p-3 hidden md:block text-center text-sm text-gray-700">{user.role}</td>
+                                    <td className="text-center text-sm text-gray-700 grid md:grid-cols-2 justify-center items-center md:space-x-2 space-y-2">
                                         {user.role !== 'admin' && (
                                             <button
                                                 onClick={() => handlePromoteUser(user._id)}

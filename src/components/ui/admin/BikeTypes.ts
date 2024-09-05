@@ -1,5 +1,5 @@
 export interface Bike {
-    _id: string;
+    _id?: string;
     name: string;
     description: string;
     pricePerHour: number;
@@ -8,5 +8,6 @@ export interface Bike {
     model: string;
     brand: string;
     isAvailable: boolean;
+    bikeImage?: string;
   }
   

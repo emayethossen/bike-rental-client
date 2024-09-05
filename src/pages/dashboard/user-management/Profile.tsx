@@ -2,8 +2,6 @@ import React from 'react';
 import {
   useGetProfileQuery,
   useUpdateProfileMutation,
-  useGetAllUsersQuery,
-  usePromoteUserToAdminMutation,
 } from '../../../redux/api/userApi';
 import { useForm } from 'react-hook-form';
 
@@ -19,13 +17,6 @@ const Profile: React.FC = () => {
   const [updateProfile] = useUpdateProfileMutation();
   const { register, handleSubmit, reset } = useForm<ProfileFormData>();
 
-  // Fetch all users if the user is an admin
-  const { data: users, isLoading: usersLoading } = useGetAllUsersQuery(undefined, {
-    skip: data?.role !== 'admin',
-  });
-
-  const [promoteUser] = usePromoteUserToAdminMutation();
-
   const onSubmit = async (formData: ProfileFormData) => {
     try {
       await updateProfile(formData).unwrap();
@@ -33,15 +24,6 @@ const Profile: React.FC = () => {
     } catch (err) {
       alert('Failed to update profile.');
       console.log(formData);
-    }
-  };
-
-  const handlePromoteUser = async (userId: string) => {
-    try {
-      await promoteUser(userId).unwrap();
-      alert('User promoted to admin!');
-    } catch (err) {
-      alert('Failed to promote user.');
     }
   };
 
@@ -118,30 +100,6 @@ const Profile: React.FC = () => {
           Update Profile
         </button>
       </form>
-
-      {/* Admin Section */}
-      {userProfile?.role === 'admin' && (
-        <div className="mt-10">
-          <h2 className="text-xl font-bold mb-4">Admin Actions</h2>
-          {usersLoading ? (
-            <div>Loading users...</div>
-          ) : (
-            <ul>
-              {users?.map((user) => (
-                <li key={user.id} className="mb-2">
-                  {user.name} ({user.email})
-                  <button
-                    className="ml-4 px-2 py-1 bg-green-600 text-white rounded"
-                    onClick={() => handlePromoteUser(user.id)}
-                  >
-                    Promote to Admin
-                  </button>
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
-      )}
     </div>
   );
 };
