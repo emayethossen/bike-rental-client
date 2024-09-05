@@ -5,7 +5,7 @@ const FeatureBikes = () => {
 
     if (isLoading) return <div>Loading...</div>;
     if (error) return <div>Error loading bikes</div>;
-    
+
     const bikes = data?.data;
     console.log(bikes);
 
@@ -13,7 +13,7 @@ const FeatureBikes = () => {
     const topBikes = bikes?.slice(0, 6);
 
     return (
-        <div className="p-12">
+        <div className="md:px-12">
             <h1 className="text-xl font-bold mb-4">Featured Bikes</h1>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
