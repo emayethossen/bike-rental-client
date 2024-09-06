@@ -8,7 +8,7 @@ import { useUpdateBikeAvailabilityMutation } from '../../../redux/api/bikeApi'; 
 const BikeDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const { data, error, isLoading } = useGetBikeByIdQuery(id);
-  const [initiatePayment, { error: paymentError }] = useInitiatePaymentMutation();
+  const [initiatePayment] = useInitiatePaymentMutation();
   const [updateBikeAvailability] = useUpdateBikeAvailabilityMutation();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [form] = Form.useForm();
@@ -40,6 +40,7 @@ const BikeDetail: React.FC = () => {
 
   const handlePayment = async (values: any) => {
     try {
+      // Call the initiatePayment mutation
       const response = await initiatePayment({
         amount: 100, // Advanced payment amount
         customerName: values.customerName,
@@ -47,21 +48,27 @@ const BikeDetail: React.FC = () => {
         customerEmail: values.customerEmail,
         customerAddress: values.customerAddress
       }).unwrap();
-
-      if (response.redirect_url) {
+  
+      // Log the response to debug
+      console.log('Payment API response:', response);
+  
+      // Check if response contains paymentUrl
+      if (response?.paymentUrl) {
         await handlePaymentSuccess();
-        window.location.href = response.redirect_url;
+        console.log(response)
+        window.location.href = response.paymentUrl 
         message.success('Redirecting to payment...');
       } else {
-        console.error('Failed to initiate payment');
+        console.error('Failed to initiate payment: Response does not contain a payment URL');
+        message.error('Payment initiation failed. Please try again later.');
       }
     } catch (error) {
-      console.error('Error initiating payment:', paymentError || error);
+      console.error('Error initiating payment:', error);
       message.error('Payment initiation failed. Please try again later.');
     }
   };
-
-
+  
+  
 
   return (
     <div className="p-4">

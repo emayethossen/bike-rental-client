@@ -2,9 +2,11 @@ import { baseApi } from './baseApi';
 
 export const paymentApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    initiatePayment: builder.mutation<{ redirect_url: string }, { amount: number; customerName: string; customerPhone: string; customerEmail: string; customerAddress: string }>({
+    initiatePayment: builder.mutation<{
+      paymentUrl: any; redirect_url: string 
+}, { amount: number; customerName: string; customerPhone: string; customerEmail: string; customerAddress: string }>({
       query: (paymentData) => ({
-        url: '/payment/initiate-payment',
+        url: '/payments/initiate-payment',
         method: 'POST',
         body: paymentData,
       }),

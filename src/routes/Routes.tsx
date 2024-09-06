@@ -20,11 +20,13 @@ import AdminLayout from '../components/layout/AdminLayout';
 import PaymentSuccess from '../components/ui/payment/PaymentSuccess';
 import PaymentFailure from '../components/ui/payment/PaymentFailure';
 import PaymentCancelled from '../components/ui/payment/PaymentCancelled';
+import Error from '../pages/Error';
 
 const router = createBrowserRouter([
     {
         path: '/',
         element: <App />,
+        errorElement: <Error />,
         children: [
             {
                 path: '/',
