@@ -1,74 +1,81 @@
 import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { useGetBikeByIdQuery } from '../../../redux/api/bikeApi';
-import { Alert, Spin, Modal, Form, Input, Button, message } from 'antd';
+import { useGetBikeByIdQuery, useUpdateBikeAvailabilityMutation } from '../../../redux/api/bikeApi';
+import { Alert, Spin, Modal, Form, Input, Button, message, DatePicker } from 'antd';
 import { useInitiatePaymentMutation } from '../../../redux/api/paymentApi';
-import { useUpdateBikeAvailabilityMutation } from '../../../redux/api/bikeApi'; // Assume this API exists
+import { RootState } from '../../../redux/store';
+import { useSelector } from 'react-redux';
+import { useCreateRentalMutation } from '../../../redux/api/rentalApi';
 
 const BikeDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
-  const { data, error, isLoading } = useGetBikeByIdQuery(id);
+  const { data, error, isLoading, refetch } = useGetBikeByIdQuery(id);
   const [initiatePayment] = useInitiatePaymentMutation();
   const [updateBikeAvailability] = useUpdateBikeAvailabilityMutation();
+  const user = useSelector((state: RootState) => state.auth.user);
+  const userId = user?._id;
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [createRental] = useCreateRentalMutation();
   const [form] = Form.useForm();
 
   if (isLoading) return <Spin tip="Loading bike details..." />;
   if (error || !data) return <Alert message="Error loading bike details" type="error" />;
+  
   const bike = data?.data;
 
-  const handleBookNow = () => {
-    setIsModalVisible(true);
-  };
-
+  const handleBookNow = () => setIsModalVisible(true);
   const handleCancel = () => {
     setIsModalVisible(false);
     form.resetFields();
   };
 
-  const handlePaymentSuccess = async () => {
+  const handlePaymentAndBooking = async (values: any) => {
     try {
-      await updateBikeAvailability({ id, isAvailable: false });
+      const { startTime, customer_name, customer_phone, customer_email } = values;
+      const amount = 100;
+
+      if (!startTime || !customer_name || !customer_phone || !customer_email) {
+        message.error('Please provide all required customer details.');
+        return;
+      }
+
+      const startTimeISO = startTime.toISOString(); // Convert start time to ISO format
+
+      // Initiate payment with booking details
+      const paymentResponse = await initiatePayment({
+        amount,
+        customer_name,
+        customer_phone,
+        customer_email,
+        // Ensure userId and bikeId are included if your API supports it
+      }).unwrap();
+
+      if (paymentResponse && typeof paymentResponse === 'string') {
+        window.location.href = paymentResponse;
+      } else {
+        message.error('Payment initiation failed. Please try again later.');
+        return;
+      }
+
+      // Create rental after successful payment initiation
+      await createRental({
+        bikeId: id,
+        userId,
+        startTime: startTimeISO,
+        paymentStatus: 'Unpaid',
+        isReturned: false,
+      }).unwrap();
+
+      await updateBikeAvailability({ id, isAvailable: false }).unwrap();
       message.success('Booking confirmed! Bike availability has been updated.');
       setIsModalVisible(false);
       form.resetFields();
+      refetch();
     } catch (error) {
-      console.error('Error updating bike availability:', error);
+      console.error('Error during booking or payment:', error);
       message.error('Booking confirmation failed. Please try again later.');
     }
   };
-
-  const handlePayment = async (values: any) => {
-    try {
-      // Call the initiatePayment mutation
-      const response = await initiatePayment({
-        amount: 100, // Advanced payment amount
-        customerName: values.customerName,
-        customerPhone: values.customerPhone,
-        customerEmail: values.customerEmail,
-        customerAddress: values.customerAddress
-      }).unwrap();
-  
-      // Log the response to debug
-      console.log('Payment API response:', response);
-  
-      // Check if response contains paymentUrl
-      if (response?.paymentUrl) {
-        await handlePaymentSuccess();
-        console.log(response)
-        window.location.href = response.paymentUrl 
-        message.success('Redirecting to payment...');
-      } else {
-        console.error('Failed to initiate payment: Response does not contain a payment URL');
-        message.error('Payment initiation failed. Please try again later.');
-      }
-    } catch (error) {
-      console.error('Error initiating payment:', error);
-      message.error('Payment initiation failed. Please try again later.');
-    }
-  };
-  
-  
 
   return (
     <div className="p-4">
@@ -80,10 +87,11 @@ const BikeDetail: React.FC = () => {
       <p>Year: {bike.year}</p>
       <p>Brand: {bike.brand}</p>
       <p>Availability: {bike.isAvailable ? 'Available' : 'Unavailable'}</p>
+
       <Button
         onClick={handleBookNow}
         type="primary"
-        disabled={!bike.isAvailable} // Disable button if bike is unavailable
+        disabled={!bike.isAvailable}
       >
         Book Now
       </Button>
@@ -97,42 +105,35 @@ const BikeDetail: React.FC = () => {
         <Form
           form={form}
           layout="vertical"
-          onFinish={handlePayment}
+          onFinish={handlePaymentAndBooking}
         >
           <Form.Item
             name="startTime"
             label="Start Time"
-            rules={[{ required: true, message: 'Please select start time' }]}
+            rules={[{ required: true, message: 'Please select a start time' }]}
           >
-            <Input type="datetime-local" />
+            <DatePicker showTime format="YYYY-MM-DDTHH:mm:ss" placeholder="Select start time" />
           </Form.Item>
           <Form.Item
-            name="customerName"
+            name="customer_name"
             label="Customer Name"
             rules={[{ required: true, message: 'Please enter your name' }]}
           >
             <Input />
           </Form.Item>
           <Form.Item
-            name="customerPhone"
+            name="customer_phone"
             label="Customer Phone"
             rules={[{ required: true, message: 'Please enter your phone number' }]}
           >
             <Input />
           </Form.Item>
           <Form.Item
-            name="customerEmail"
+            name="customer_email"
             label="Customer Email"
             rules={[{ required: true, message: 'Please enter your email' }]}
           >
             <Input type="email" />
-          </Form.Item>
-          <Form.Item
-            name="customerAddress"
-            label="Customer Address"
-            rules={[{ required: true, message: 'Please enter your address' }]}
-          >
-            <Input />
           </Form.Item>
           <Form.Item>
             <Button type="primary" htmlType="submit">

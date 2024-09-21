@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useGetBikesQuery } from '../../../redux/api/bikeApi';
+import Loader from '../../../components/ui/Loader';
 
 const BikeListing: React.FC = () => {
   const { data, error, isLoading } = useGetBikesQuery();
@@ -7,7 +8,13 @@ const BikeListing: React.FC = () => {
   const [modelFilter, setModelFilter] = useState<string>('');
   const [availabilityFilter, setAvailabilityFilter] = useState<boolean | null>(null);
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <Loader />
+      </div>
+    );
+  }
   if (error) return <div>Error loading bikes</div>;
 
   const bikes = data?.data;

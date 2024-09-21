@@ -1,30 +1,48 @@
 import { useState } from 'react';
-import { useGetBikesQuery, useDeleteBikeMutation } from '../../../redux/api/bikeApi';
-import BikeModal from './BikeModal';
-import { Bike } from './BikeTypes';
 import { toast } from 'react-toastify';
+import { Bike } from '../../../types/BikeTypes';
+import { useDeleteBikeMutation, useGetBikesQuery } from '../../../redux/api/bikeApi';
+import BikeModal from './BikeModal';
+import Loader from '../../../components/ui/Loader';
+import ConfirmationModal from '../../../utils/ConfirmationModal';
 
 const BikeList = () => {
-  const { data, refetch, isLoading } = useGetBikesQuery();
+  const { data, refetch, isLoading } = useGetBikesQuery("");
   const [deleteBike] = useDeleteBikeMutation();
   const [selectedBike, setSelectedBike] = useState<Bike | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isConfirmOpen, setConfirmOpen] = useState(false);
+  const [bikeIdToDelete, setBikeIdToDelete] = useState<string | null>(null);
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <Loader />
+      </div>
+    );
+  }
 
   const handleEdit = (bike: Bike) => {
     setSelectedBike(bike);
     setIsModalOpen(true);
   };
 
-  const handleDelete = async (id: string) => {
-    if (window.confirm('Are you sure you want to delete this bike?')) {
+  const handleDelete = (id: string) => {
+    setBikeIdToDelete(id);
+    setConfirmOpen(true); // Open the confirmation modal
+  };
+
+  const confirmDelete = async () => {
+    if (bikeIdToDelete) {
       try {
-        await deleteBike(id).unwrap();
+        await deleteBike(bikeIdToDelete).unwrap();
         toast.success('Bike deleted successfully!');
         refetch(); // Refresh the list
       } catch (error) {
         toast.error('Error deleting bike.');
+      } finally {
+        setConfirmOpen(false); // Close the confirmation modal
+        setBikeIdToDelete(null); // Reset the bike ID
       }
     }
   };
@@ -81,7 +99,7 @@ const BikeList = () => {
                 </button>
                 <button
                   className="bg-red-500 text-white px-2 py-1"
-                  onClick={() => handleDelete(bike._id)}
+                  onClick={() => handleDelete(bike._id as string)}
                 >
                   Delete
                 </button>
@@ -98,6 +116,13 @@ const BikeList = () => {
             setIsModalOpen(false);
             refetch(); // Refresh the list when the modal is closed
           }}
+        />
+      )}
+
+      {isConfirmOpen && (
+        <ConfirmationModal
+          onConfirm={confirmDelete}
+          onCancel={() => setConfirmOpen(false)}
         />
       )}
     </div>

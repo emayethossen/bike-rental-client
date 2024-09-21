@@ -5,7 +5,7 @@ export const rentalApi = baseApi.injectEndpoints({
     getRentals: builder.query({
       query: () => '/rentals',
     }),
-    createBooking: builder.mutation({
+    createRental: builder.mutation({
       query: (bookingData) => ({
         url: '/rentals',
         method: 'POST',
@@ -36,7 +36,7 @@ export const rentalApi = baseApi.injectEndpoints({
 
 export const {
   useGetRentalsQuery,
-  useCreateBookingMutation,
+  useCreateRentalMutation,
   useUpdatePaymentStatusMutation,
   useReturnBikeMutation, // Hook for the new returnBike mutation
   useGetRentalByIdQuery, // Hook for getting rental details by ID

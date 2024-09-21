@@ -1,7 +1,6 @@
-
 import { FaMapMarkerAlt, FaPhoneAlt, FaEnvelope } from 'react-icons/fa';
-import teamMember1 from '../assets/images/bike.png';  // Replace with actual image paths
-import teamMember2 from '../assets/images/bike.png';  // Replace with actual image paths
+import teamMember1 from '../../assets/images/bike.png';  
+import teamMember2 from '../../assets/images/bike.png';  
 
 const About = () => {
   return (

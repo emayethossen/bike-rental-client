@@ -1,15 +1,16 @@
 import React from 'react';
 import { useGetAllUsersQuery, usePromoteUserToAdminMutation, useDeleteUserMutation } from '../../../redux/api/userApi';
+import Loader from '../../../components/ui/Loader';
 
 const AdminUserList: React.FC = () => {
-    const { data, error, isLoading } = useGetAllUsersQuery();
+    const { data, error, isLoading } = useGetAllUsersQuery("");
     const [promoteUserToAdmin, { isLoading: isPromoting }] = usePromoteUserToAdminMutation();
     const [deleteUser, { isLoading: isDeleting }] = useDeleteUserMutation();
 
     if (isLoading) {
         return (
             <div className="flex justify-center items-center min-h-screen">
-                <div className="text-xl font-semibold">Loading...</div>
+                <Loader />
             </div>
         );
     }

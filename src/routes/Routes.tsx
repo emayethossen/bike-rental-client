@@ -1,26 +1,24 @@
 import { createBrowserRouter } from 'react-router-dom';
 import App from '../App';
-import Login from '../pages/Login';
-import Register from '../pages/Register';
-import Home from '../pages/Home';
-import About from '../pages/About';
-import Contact from '../pages/Contact';
+import Login from '../pages/layout/Login';
+import Register from '../pages/layout/Register';
+import Home from '../pages/layout/Home';
+import About from '../pages/layout/About';
+import Contact from '../pages/layout/Contact';
 import ForgotPassword from '../components/ui/ForgotPassword';
-import Profile from '../pages/dashboard/user-management/Profile';
-import BikeListing from '../pages/dashboard/bike-management/BikeListing';
-import BikeDetail from '../pages/dashboard/bike-management/BikeDetail';
-import MyRentals from '../pages/dashboard/rental-management/MyRentals';
-import AdminUserList from '../components/ui/admin/AdminUserList';
-import AdminDashboard from '../pages/AdminDashboard';
+import Profile from '../pages/dashboard/Profile';
+import BikeListing from '../pages/dashboard/user/BikeListing';
+import BikeDetail from '../pages/dashboard/user/BikeDetail';
+import MyRentals from '../pages/dashboard/user/MyRentals';
+import AdminDashboard from '../pages/dashboard/admin/AdminDashboard';
 import PrivateRoute from './PrivateRoutes';
-import BikeList from '../components/ui/admin/BikeList';
-import UserDashboard from '../pages/UserDashboard';
+import UserDashboard from '../pages/dashboard/user/UserDashboard';
 import UserLayout from '../components/layout/UserLayout';
 import AdminLayout from '../components/layout/AdminLayout';
-import PaymentSuccess from '../components/ui/payment/PaymentSuccess';
-import PaymentFailure from '../components/ui/payment/PaymentFailure';
-import PaymentCancelled from '../components/ui/payment/PaymentCancelled';
-import Error from '../pages/Error';
+import Error from '../pages/layout/Error';
+import ReturnBike from '../pages/dashboard/admin/ReturnBike';
+import AdminUserList from '../pages/dashboard/admin/AdminUserList';
+import BikeList from '../pages/dashboard/admin/BikeList';
 
 const router = createBrowserRouter([
     {
@@ -66,6 +64,10 @@ const router = createBrowserRouter([
                 path: 'bike-list',
                 element: <PrivateRoute role='admin'>< BikeList /></PrivateRoute>,
             },
+            {
+                path:'rental-list',
+                element: <ReturnBike rentalId={''} />
+            }
         ]
     },
     {
@@ -86,23 +88,11 @@ const router = createBrowserRouter([
             },
             {
                 path: 'bikes/:id',
-                element: <PrivateRoute><BikeDetail /></PrivateRoute>,
+                element: <BikeDetail />,
             },
             {
                 path: 'my-rentals',
                 element: <MyRentals />,
-            },
-            {
-                path: 'payment-success',
-                element: <PaymentSuccess />,
-            },
-            {
-                path: 'payment-failure',
-                element: <PaymentFailure />,
-            },
-            {
-                path: 'payment-cancelled',
-                element: <PaymentCancelled />,
             },
         ]
     },

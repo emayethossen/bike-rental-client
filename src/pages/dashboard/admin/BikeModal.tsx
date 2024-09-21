@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useCreateBikeMutation, useUpdateBikeMutation } from '../../../redux/api/bikeApi';
-import { Bike } from './BikeTypes';
+import { Bike } from '../../../types/BikeTypes';
 import { toast } from 'react-toastify';
 
 interface BikeModalProps {
@@ -98,6 +98,7 @@ const BikeModal: React.FC<BikeModalProps> = ({ bike, onClose }) => {
               value={formData.description}
               onChange={handleChange}
               className="w-full px-3 py-2 border border-gray-300 rounded"
+              required
             />
           </div>
 

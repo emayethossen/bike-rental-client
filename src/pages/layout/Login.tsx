@@ -1,11 +1,11 @@
-import { useState } from 'react';
+import { useState } from 'react'; 
 import { useDispatch } from 'react-redux';
-import { setUser } from '../redux/features/authSlice';
+import { setUser } from '../../redux/features/authSlice';
 import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGoogle, faFacebookF, faTwitter, faLinkedinIn } from '@fortawesome/free-brands-svg-icons';
-import backgroundImage from '../assets/images/bike.png';
-import { useLoginMutation } from '../redux/api/authApi';
+import backgroundImage from '../../assets/images/bike.png';
+import { useLoginMutation } from '../../redux/api/authApi';
 
 const Login = () => {
   const [email, setEmail] = useState('');

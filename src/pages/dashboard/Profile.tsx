@@ -2,8 +2,9 @@ import React from 'react';
 import {
   useGetProfileQuery,
   useUpdateProfileMutation,
-} from '../../../redux/api/userApi';
+} from '../../redux/api/userApi';
 import { useForm } from 'react-hook-form';
+import Loader from '../../components/ui/Loader';
 
 interface ProfileFormData {
   name: string;
@@ -39,7 +40,13 @@ const Profile: React.FC = () => {
     }
   }, [userProfile, reset]);
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <Loader />
+      </div>
+    );
+  }
   if (error) {
     return <div>Error loading profile.</div>;
   }

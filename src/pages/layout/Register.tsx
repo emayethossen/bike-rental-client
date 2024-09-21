@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useRegisterMutation } from '../redux/api/authApi';
+import { useRegisterMutation } from '../../redux/api/authApi';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGoogle, faFacebookF, faTwitter, faLinkedinIn } from '@fortawesome/free-brands-svg-icons';
-import backgroundImage from '../assets/images/bike.png';
+import backgroundImage from '../../assets/images/bike.png';
 
 const Register = () => {
   const [name, setName] = useState('');
@@ -12,7 +12,7 @@ const Register = () => {
   const [phone, setPhone] = useState('');
   const [address, setAddress] = useState('');
   const [role] = useState('user');
-  const [register, { isLoading }] = useRegisterMutation();
+  const [register] = useRegisterMutation();
   const navigate = useNavigate();
 
   const handleRegister = async (e: { preventDefault: () => void; }) => {

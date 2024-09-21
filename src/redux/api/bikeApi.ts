@@ -30,10 +30,10 @@ export const bikeApi = baseApi.injectEndpoints({
       }),
     }),
     updateBikeAvailability: builder.mutation({
-      query: ({ id, availability }) => ({
+      query: ({ id, isAvailable }) => ({
         url: `/bikes/${id}/availability`,
         method: 'PATCH',
-        body: { availability },
+        body: { isAvailable },
       }),
     }),
   }),
