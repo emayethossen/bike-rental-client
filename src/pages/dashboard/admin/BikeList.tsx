@@ -29,7 +29,7 @@ const BikeList = () => {
 
   const handleDelete = (id: string) => {
     setBikeIdToDelete(id);
-    setConfirmOpen(true); // Open the confirmation modal
+    setConfirmOpen(true); 
   };
 
   const confirmDelete = async () => {
@@ -41,8 +41,8 @@ const BikeList = () => {
       } catch (error) {
         toast.error('Error deleting bike.');
       } finally {
-        setConfirmOpen(false); // Close the confirmation modal
-        setBikeIdToDelete(null); // Reset the bike ID
+        setConfirmOpen(false); 
+        setBikeIdToDelete(null); 
       }
     }
   };

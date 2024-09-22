@@ -1,28 +1,22 @@
-// ReturnBike.tsx
-import React, { useState } from 'react';
-import { useReturnBikeMutation, useGetRentalByIdQuery } from '../../../redux/api/rentalApi'; // Adjust the path accordingly
+import React from 'react';
+import { useReturnBikeMutation, useGetRentalByIdQuery } from '../../../redux/api/rentalApi';
 
 interface ReturnBikeProps {
-  rentalId: string; // This should be passed as a prop (or fetched from route params if you're using routing)
+  rentalId: string; 
 }
 
 const ReturnBike: React.FC<ReturnBikeProps> = ({ rentalId }) => {
-  const [endTime, setEndTime] = useState<string>(''); // Local state to hold the end time
-  const { data: rental, error: rentalError, isLoading: rentalLoading } = useGetRentalByIdQuery(rentalId); // Fetch rental details
+  const { data: rental, error: rentalError, isLoading: rentalLoading } = useGetRentalByIdQuery(rentalId);
+  const [returnBike, { isLoading: isReturning, isSuccess, isError }] = useReturnBikeMutation();
 
-  const [returnBike, { isLoading: isReturning, isSuccess, isError }] = useReturnBikeMutation(); // Hook for the returnBike mutation
-
-  // Handle form submission
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!endTime) {
-      alert('Please select an end time');
-      return;
-    }
+  // Handle the return action
+  const handleReturn = async () => {
+    console.log('Returning bike with rentalId:', rentalId); 
     try {
-      await returnBike({ rentalId, endTime }).unwrap();
+      await returnBike({ rentalId }).unwrap(); 
       alert('Bike returned successfully!');
     } catch (error) {
+      console.error('Error returning bike:', error); 
       alert('Failed to return the bike. Please try again.');
     }
   };
@@ -35,27 +29,17 @@ const ReturnBike: React.FC<ReturnBikeProps> = ({ rentalId }) => {
       <h2 className="text-2xl font-bold mb-4">Return Bike</h2>
       <p><strong>Bike:</strong> {rental?.bike?.name || 'Bike name unavailable'}</p>
       <p><strong>Start Time:</strong> {rental?.startTime || 'N/A'}</p>
+      <p><strong>Return Status:</strong> {rental?.isReturned ? 'Returned' : 'Not Returned'}</p>
 
-      <form onSubmit={handleSubmit} className="mt-4">
-        <label className="block mb-2">
-          End Time:
-          <input
-            type="datetime-local"
-            className="mt-1 block w-full p-2 border border-gray-300 rounded"
-            value={endTime}
-            onChange={(e) => setEndTime(e.target.value)}
-            required
-          />
-        </label>
-
+      {!rental?.isReturned && (
         <button
-          type="submit"
+          onClick={handleReturn}
           className="mt-4 w-full p-2 bg-blue-500 text-white rounded hover:bg-blue-600"
           disabled={isReturning}
         >
           {isReturning ? 'Returning...' : 'Return Bike'}
         </button>
-      </form>
+      )}
 
       {isSuccess && (
         <div className="mt-4 p-2 bg-green-100 text-green-700">

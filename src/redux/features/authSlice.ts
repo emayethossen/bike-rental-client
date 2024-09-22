@@ -3,7 +3,6 @@ import { createSlice } from '@reduxjs/toolkit';
 export interface User {
     _id: string;
     role: 'user' | 'admin';
-    // Add other user fields here as needed
 }
 
 type TAuthState = {

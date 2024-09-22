@@ -1,7 +1,7 @@
 import { useGetBikesQuery } from '../../redux/api/bikeApi';
 
 const FeatureBikes = () => {
-    const { data, error, isLoading } = useGetBikesQuery();
+    const { data, error, isLoading } = useGetBikesQuery("");
 
     if (isLoading) return <div>Loading...</div>;
     if (error) return <div>Error loading bikes</div>;

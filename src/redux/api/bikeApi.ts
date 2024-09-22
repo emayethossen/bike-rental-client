@@ -8,7 +8,7 @@ export const bikeApi = baseApi.injectEndpoints({
     getBikeById: builder.query({
       query: (id) => `/bikes/${id}`,
     }),
-    // Additional admin-specific endpoints if needed
+    
     createBike: builder.mutation({
       query: (bike) => ({
         url: '/bikes',

@@ -4,10 +4,8 @@ const ForgotPassword = () => {
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: { preventDefault: () => void; }) => {
     e.preventDefault();
-    // Here you would usually handle the form submission to request a password reset
-    // For example, you might send the email to your backend service
     setMessage('A password reset link has been sent to your email address.');
   };
 
@@ -43,25 +41,3 @@ const ForgotPassword = () => {
 }
 
 export default ForgotPassword;
-
-
-{/* <ul>
-<li>
-Lightweight Design
-</li>
-<li>
-Ventilation System
-</li>
-<li>
-High Impact Protection
-</li>
-<li>
-Retro Aesthetic
-</li>
-<li>
-Adjustable Fit
-</li>
-<li>
-Durable Shell
-</li>
-</ul> */}

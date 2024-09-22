@@ -1,21 +1,27 @@
 import React from 'react';
 import { Layout, Menu } from 'antd';
 import { Outlet, useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import image from "../../assets/images/bike-logo.png";
 import { RootState } from '../../redux/store';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router-dom'; 
+import { logout } from '../../redux/features/authSlice';
 
 const { Header, Content, Sider, Footer } = Layout;
 
 const AdminLayout: React.FC = () => {
     const navigate = useNavigate();
+    const dispatch = useDispatch();
     const user = useSelector((state: RootState) => state.auth.user);
 
     if (!user || user.role !== 'admin') {
-        navigate('/login'); // Redirect to login if not admin
+        navigate('/login'); 
         return null;
     }
+    const handleLogout = () => {
+        dispatch(logout()); 
+        navigate('/');
+    };
 
     const adminItems = [
         { key: 'home', label: 'Home', route: '/' },
@@ -24,14 +30,19 @@ const AdminLayout: React.FC = () => {
         { key: 'user-management', label: 'User Management', route: '/admin/user-list' },
         { key: 'bike-management', label: 'Bike Management', route: '/admin/bike-list' },
         { key: 'rental-management', label: 'Rental Management', route: '/admin/rental-list' },
+        { key: 'logout', label: 'Logout', route: '', onClick: handleLogout }, 
     ];
 
-    const handleMenuClick = (route: string) => {
-        navigate(route);
+    const handleMenuClick = (route: string, onClick?: () => void) => {
+        if (onClick) {
+            onClick();
+        } else {
+            navigate(route);
+        }
     };
 
     return (
-        <Layout>
+        <Layout style={{ minHeight: '100vh' }}>
             <Sider
                 breakpoint="lg"
                 collapsedWidth="0"
@@ -50,7 +61,7 @@ const AdminLayout: React.FC = () => {
                     items={adminItems.map(item => ({
                         key: item.key,
                         label: item.label,
-                        onClick: () => handleMenuClick(item.route),
+                        onClick: () => handleMenuClick(item.route, item.onClick),
                     }))}
                 />
             </Sider>
@@ -64,7 +75,7 @@ const AdminLayout: React.FC = () => {
                     </div>
                 </Content>
                 <Footer style={{ textAlign: 'center' }}>
-                Copyright ©{new Date().getFullYear()} Created by Auto Bike
+                    Copyright ©{new Date().getFullYear()} Created by Auto Bike
                 </Footer>
             </Layout>
         </Layout>

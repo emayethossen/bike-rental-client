@@ -39,7 +39,7 @@ const BikeDetail: React.FC = () => {
         return;
       }
 
-      const startTimeISO = startTime.toISOString(); // Convert start time to ISO format
+      const startTimeISO = startTime.toISOString(); 
 
       // Initiate payment with booking details
       const paymentResponse = await initiatePayment({
@@ -47,7 +47,7 @@ const BikeDetail: React.FC = () => {
         customer_name,
         customer_phone,
         customer_email,
-        // Ensure userId and bikeId are included if your API supports it
+        
       }).unwrap();
 
       if (paymentResponse && typeof paymentResponse === 'string') {

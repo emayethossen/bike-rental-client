@@ -10,9 +10,8 @@ import { useLoginMutation } from '../../redux/api/authApi';
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [errorMessage, setErrorMessage] = useState(''); // State for handling error messages
+  const [errorMessage, setErrorMessage] = useState(''); 
   const [login, { isLoading }] = useLoginMutation();
-  // Initialize dispatch and navigate
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -31,19 +30,15 @@ const Login = () => {
       const response = await login({ email, password }).unwrap();
       console.log('Full login response:', response);
 
-      // Check if the response contains the required data
       if (!response.data) {
         throw new Error('User data is missing');
       }
 
-      // Destructure the required user data and token from the response
       const { data: user, token } = response;
 
-      // Set user and token in the state and localStorage
       dispatch(setUser({ user, token }));
       localStorage.setItem('token', token);
 
-      // Navigate based on the user's role
       if (user.role === 'admin') {
         navigate('/admin/dashboard');
       } else if (user.role === 'user') {
@@ -132,7 +127,7 @@ const Login = () => {
             type="submit"
             value="Login"
             className="p-2 rounded text-white bg-green-500 font-semibold w-full"
-            disabled={isLoading} // Disable button during loading
+            disabled={isLoading} 
           />
           <p className="mt-2 text-center">Don't have an account? <span className="text-blue-500 cursor-pointer" onClick={() => navigate('/register')}>Register here</span></p>
         </form>

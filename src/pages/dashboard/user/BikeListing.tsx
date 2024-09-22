@@ -3,7 +3,7 @@ import { useGetBikesQuery } from '../../../redux/api/bikeApi';
 import Loader from '../../../components/ui/Loader';
 
 const BikeListing: React.FC = () => {
-  const { data, error, isLoading } = useGetBikesQuery();
+  const { data, error, isLoading } = useGetBikesQuery("");
   const [brandFilter, setBrandFilter] = useState<string>('');
   const [modelFilter, setModelFilter] = useState<string>('');
   const [availabilityFilter, setAvailabilityFilter] = useState<boolean | null>(null);

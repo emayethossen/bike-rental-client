@@ -1,39 +1,39 @@
 import { Key, useState } from 'react';
-import { useGetRentalsQuery, useUpdatePaymentStatusMutation } from '../../../redux/api/rentalApi';
+import { useGetRentalsQuery, useInitiatePaymentMutation, useUpdatePaymentStatusMutation } from '../../../redux/api/rentalApi';
 import Loader from '../../../components/ui/Loader';
+import { toast } from 'react-toastify';
 
 const MyRentals = () => {
-  const { data, isLoading, error } = useGetRentalsQuery(""); // Fetch rentals from API
-  const [updatePaymentStatus, { isLoading: isUpdating }] = useUpdatePaymentStatusMutation(); // Mutation for payment update
-  const [activeTab, setActiveTab] = useState('Unpaid'); // State for active tab (Unpaid or Paid)
+  const { data, isLoading, error } = useGetRentalsQuery("");
+  const [initiatePayment] = useInitiatePaymentMutation();
+  const [updatePaymentStatus, { isLoading: isUpdating }] = useUpdatePaymentStatusMutation();
+  const [activeTab, setActiveTab] = useState('Unpaid');
 
-  // Handle payment when user clicks "Pay" button
-  const handlePayment = async (rentalId: any) => {
-    if (!window.confirm('Are you sure you want to pay for this rental?')) return; // Confirmation before payment
+  const handlePayment = async (rentalId: string, totalCost: number) => {
+    if (!window.confirm('Are you sure you want to pay for this rental?')) return;
 
     try {
-      await updatePaymentStatus({ rentalId, paymentStatus: 'Paid' }).unwrap(); // Update payment status to 'Paid'
-      alert('Payment successful!'); // Show success message
+      const { data } = await initiatePayment({ rentalId, totalAmount: totalCost }).unwrap();
+
+      if (data?.paymentUrl) {
+        window.location.href = data.paymentUrl;
+      } else {
+        toast.error('Failed to initiate payment.');
+      }
     } catch (error) {
-      console.error('Payment failed:', error); // Log error if payment fails
-      alert('Payment failed. Please try again.');
+      console.error('Payment failed:', error);
+      toast.error('Payment failed. Please try again.');
     }
   };
 
-  // Handle loading and error states
   if (isLoading) return <Loader />;
   if (error) return <p>Error loading rentals.</p>;
 
-  // Ensure rentals array is defined
   const rentals = data?.data || [];
-  // console.log(rentals)
+  const filteredRentals = rentals.filter((rental: { paymentStatus: string }) => rental.paymentStatus === activeTab);
 
-  // Filter rentals based on active tab ('Unpaid' or 'Paid')
-  const filteredRentals = rentals.filter((rental: { paymentStatus: string; }) => rental.paymentStatus === activeTab);
-console.log(filteredRentals)
   return (
     <div className="p-4">
-      {/* Tab buttons */}
       <div className="mb-4 flex justify-center">
         <button
           onClick={() => setActiveTab('Unpaid')}
@@ -49,10 +49,9 @@ console.log(filteredRentals)
         </button>
       </div>
 
-      {/* Rental list */}
       <div>
         {filteredRentals.length > 0 ? (
-          filteredRentals.map((rental: { id: Key | null | undefined; bike: { name: any; }; startTime: string | number | Date; returnTime: string | number | Date; totalCost: any; }) => (
+          filteredRentals.map((rental: { id: Key, bike: { name: string }, startTime: string, returnTime: string, totalCost: number }) => (
             <div key={rental.id} className="p-4 border border-gray-300 rounded mb-2">
               <h3 className="font-bold">{rental.bike?.name || 'Bike Name Unavailable'}</h3>
               <p>Start Time: {rental.startTime ? new Date(rental.startTime).toLocaleString() : 'N/A'}</p>
@@ -60,7 +59,7 @@ console.log(filteredRentals)
               <p>Total Cost: Tk {rental.totalCost || 'N/A'}</p>
               {activeTab === 'Unpaid' && (
                 <button
-                  onClick={() => handlePayment(rental.id)}
+                  onClick={() => handlePayment(rental.id as string, rental.totalCost)}
                   className="bg-blue-500 text-white px-4 py-2 rounded"
                   disabled={isUpdating}
                 >
@@ -71,9 +70,7 @@ console.log(filteredRentals)
           ))
         ) : (
           <p className="text-center text-gray-500">
-            {activeTab === 'Unpaid'
-              ? 'No unpaid rentals at the moment.'
-              : 'All rentals have been paid.'}
+            {activeTab === 'Unpaid' ? 'No unpaid rentals at the moment.' : 'All rentals have been paid.'}
           </p>
         )}
       </div>

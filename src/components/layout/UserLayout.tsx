@@ -1,20 +1,27 @@
 import { Layout, Menu } from 'antd';
 import { Outlet, useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../../redux/store';
 import image from "../../assets/images/bike-logo.png";
 import { Link } from 'react-router-dom';
+import { logout } from '../../redux/features/authSlice';
 
 const { Header, Content, Sider, Footer } = Layout;
 
 const UserLayout = () => {
     const navigate = useNavigate();
+    const dispatch = useDispatch();
     const user = useSelector((state: RootState) => state.auth.user);
 
     if (!user || user.role !== 'user') {
-        navigate('/login'); // Redirect to login if not user
+        navigate('/login');
         return null;
     }
+
+    const handleLogout = () => {
+        dispatch(logout()); 
+        navigate('/'); 
+    };
 
     const userItems = [
         { key: 'home', label: 'Home', route: '/' },
@@ -22,10 +29,15 @@ const UserLayout = () => {
         { key: 'profile', label: 'Profile', route: '/user/profile' },
         { key: 'bikes', label: 'Bikes', route: '/user/bikes' },
         { key: 'my-rentals', label: 'My Rentals', route: '/user/my-rentals' },
+        { key: 'logout', label: 'Logout', route: '', onClick: handleLogout }, 
     ];
 
-    const handleMenuClick = (route: string) => {
-        navigate(route);
+    const handleMenuClick = (route: string, onClick?: () => void) => {
+        if (onClick) {
+            onClick(); 
+        } else {
+            navigate(route);
+        }
     };
 
     return (
@@ -48,7 +60,7 @@ const UserLayout = () => {
                     items={userItems.map(item => ({
                         key: item.key,
                         label: item.label,
-                        onClick: () => handleMenuClick(item.route),
+                        onClick: () => handleMenuClick(item.route, item.onClick),
                     }))}
                 />
             </Sider>

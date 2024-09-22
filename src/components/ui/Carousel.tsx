@@ -26,7 +26,7 @@ const textContainerStyle: React.CSSProperties = {
 
 const imageStyle: React.CSSProperties = {
     width: '100%',
-    maxWidth: '100px', // Adjusted for responsiveness
+    maxWidth: '100px', 
     height:'100px',
     borderRadius: '10px',
     marginBottom: '20px',

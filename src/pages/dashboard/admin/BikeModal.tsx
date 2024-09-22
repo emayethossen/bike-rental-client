@@ -47,7 +47,7 @@ const BikeModal: React.FC<BikeModalProps> = ({ bike, onClose }) => {
       ...formData,
       pricePerHour: parseFloat(formData.pricePerHour.toString()), // Convert to number
       year: parseInt(formData.year.toString(), 10), // Convert to number
-      isAvailable: formData.isAvailable // Boolean should be directly used
+      isAvailable: formData.isAvailable 
     };
   
     try {
