@@ -1,10 +1,31 @@
 const UserDashboard = () => {
 
     return (
-        <div>
-            <h1 className='text-3xl font-bold text-purple-500'>Emayet Hossen Riad</h1>
+      <div className="p-6">
+        <h1 className="text-xl md:text-2xl font-bold mb-6">User Dashboard Overview</h1>
+  
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {/* Total Users Card */}
+          <div className="bg-[#FEFCE8] p-4 shadow-md rounded-md">
+            <h2 className="text-lg font-semibold">Total Bookings</h2>
+            <p className="text-xl font-bold">16</p>
+          </div>
+  
+          {/* Total Bikes Card */}
+          <div className="bg-[#E0F7FA] p-4 shadow-md rounded-md">
+            <h2 className="text-lg font-semibold">Available Bikes</h2>
+            <p className="text-xl font-bold">08</p>
+          </div>
+  
+          {/* Total Rentals Card */}
+          <div className="bg-[#FEF2F2] p-4 shadow-md rounded-md">
+            <h2 className="text-lg font-semibold">Total Rentals</h2>
+            <p className="text-xl font-bold">0</p>
+          </div>
         </div>
+      </div>
     );
-};
-
-export default UserDashboard;
+  };
+  
+  export default UserDashboard;
+  
