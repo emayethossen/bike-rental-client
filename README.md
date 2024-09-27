@@ -1,30 +1,47 @@
-# React + TypeScript + Vite
+# Bike Rental Service Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This is the frontend application for the Bike Rental Service website. The application is built using React, Ant Design, TailwindCSS, Typescript, Redux and several other modern web technologies. It enables users to browse available bikes, make rental bookings, and complete payments via integrated payment gateways.
 
-Currently, two official plugins are available:
+## Demo
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Check out the live demo of the project here: https://bike-rentals-app.netlify.app/
 
-## Expanding the ESLint configuration
+## Features
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+- **Browse Bikes:** View available bikes with filtering and sorting options.
+- **Rental Management:** Book a bike, manage your bookings, and view your rental history.
+- **Payment Integration:** Make payments via the Aamarpay or SSLCOMMERZ payment gateways.
+- **Authentication:** Secure login and registration using JWT (JSON Web Token).
+- **Real-time Notifications:** Success and error messages using React Toastify.
+- **Responsive Design:** Fully responsive design using TailwindCSS and Ant Design.
 
-- Configure the top-level `parserOptions` property like this:
+## Technologies Used
 
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
-```
+- **React** - Core library for building the user interface.
+- **TypeScript** - Provides type safety for the React codebase.
+- **Redux** - Manages the global state of the application.
+- **Redux Toolkit** - Simplifies Redux logic with slices and asynchronous handling.
+- **React Hook Form** - Simplified form handling with validation.
+- **React Router DOM** - Routing for navigation between different pages.
+- **Ant Design** - UI component library for professional designs.
+- **TailwindCSS** - Utility-first CSS framework for styling.
+- **React Toastify** - Notifications for success and error messages.
+- **Lottie React** - For animations on the site.
+- **FontAwesome & Lucide React** - For icons.
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+## Prerequisites
+
+To run this project, ensure you have the following installed:
+
+- Node.js (v14.x or later)
+- npm or yarn (latest version)
+
+## Installation
+
+### Clone the repository:
+
+```bash
+git clone https://github.com/your-username/bike-rental-frontend.git
+cd bike-rental-frontend
+npm install
+
